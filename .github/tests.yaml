@@ -12,7 +12,7 @@ concurrency:
 jobs:
   commits:
     name: Check commits format
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Fetching commits
         id: retrieve-commits
