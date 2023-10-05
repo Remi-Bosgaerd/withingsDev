@@ -14,12 +14,11 @@ jobs:
     name: Check commits format
     runs-on: ubuntu-latest
     steps:
-      - name: Fetching commits
-        id: retrieve-commits
-        run: |
-          commits=$(curl -L -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "${{ github.event.pull_request._links.commits.href }}")
-          echo "commits=$commits" >> "$GITHUB_OUTPUT"
       - name: Ensure commits are correctly named
         run: |
-          echo "${{ steps.retrieve-commits.outputs.commits }}"
-          echo "${{ fromJson(steps.retrieve-commits.outputs.commits)[0].commit.message }}
+          commits=$(curl -L -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "${{ github.event.pull_request._links.commits.href }}")
+          for commit in $(jq '.' <<<"$commits")
+          do
+            echo "$commit.commit.message"
+            echo "hey"
+          done
