@@ -1,0 +1,25 @@
+on:
+  push:
+    branches:
+      - master
+  pull_request: {}
+  workflow_dispatch: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  commits:
+    name: Check commits format
+    runs-on: self-hosted
+    steps:
+      - name: Fetching commits
+        id: retrieve-commits
+        run: |
+          commits=$(curl -L -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "${{ github.event.pull_request._links.commits.href }}")
+          echo "commits=$commits" >> "$GITHUB_OUTPUT"
+      - name: Ensure commits are correctly named
+        run: |
+          echo "${{ steps.retrieve-commits.outputs.commits }}"
+          echo "${{ fromJson(steps.retrieve-commits.outputs.commits)[0].commit.message }}
