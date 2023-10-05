@@ -17,4 +17,4 @@ jobs:
       - name: Ensure commits are correctly named
         run: |
           commits=$(curl -L -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "${{ github.event.pull_request._links.commits.href }}")
-          echo "${{ fromJson('$commits')[0].commit.message }}
+          jq '.' <<<"$commits"
